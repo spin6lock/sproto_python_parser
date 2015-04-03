@@ -6,16 +6,15 @@ class Number(Symbol):
     regex = re.compile("\d+")
 
 class EntityName(Symbol):
-    regex = re.compile("\.([a-zA-Z0-9]+)")
+    regex = re.compile("([a-zA-Z0-9]+)")
 
 class Instruction(Namespace):
     grammar = name(), attr("id", Number), ":", attr("typing", Type)
 
-class Function(List):
-    pass
-
 block = "{", maybe_some(Instruction), "}"
-Function.grammar = attr("name", EntityName), block
+
+class Function(List):
+    grammar = ".", attr("name", EntityName), block
 
 f = parse("""
         .Person { 
