@@ -11,19 +11,23 @@ class EntityName(Symbol):
 class Instruction(Namespace):
     grammar = name(), attr("id", Number), ":", attr("typing", Type)
 
-block = "{", maybe_some(Instruction), "}"
+class Struct(List):
+    pass
 
-class Function(List):
-    grammar = ".", attr("name", EntityName), block
+block = "{", maybe_some([Instruction, Struct]), "}"
+Struct.grammar = ".", attr("name", EntityName), block
 
 f = parse("""
         .Person { 
             name 0 : string
             id 1 : integer
             female 2 : boolean
-        }
-        """, Function)
+            .Phone {
+                type 0 : integer
+                number 1 : string
+            }
+        }""", Struct)
 
 print(f.name)
 for fitem in f:
-    print(fitem.name, fitem.typing, fitem.id)
+    print(fitem)
